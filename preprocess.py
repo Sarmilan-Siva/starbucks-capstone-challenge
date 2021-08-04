@@ -21,7 +21,6 @@ def process_profile(df):
   
   pf_gender = pd.get_dummies(df['gender'], prefix="gn")
   df_pf = pd.concat([df, pf_gender], axis=1, sort=False)
-  df_pf.drop(columns='gender', inplace=True)
   
   df_pf['became_member_on'] = df_pf['became_member_on'].apply(lambda x: pd.to_datetime(x, format='%Y%m%d'))
   df_pf['member_for'] = round((pd.to_datetime('today') - df_pf['became_member_on'])/np.timedelta64(365, 'D'), 2)
@@ -37,6 +36,22 @@ def process_transcript(df):
   df = pd.concat([df, df['value'].apply(pd.Series)], axis=1)
   df['offer id'] = df['offer id'].fillna(df['offer_id'])
   df.drop(columns=['value', 'offer_id'], inplace=True)
+  
+  # dropping ALL duplicate values
+  df.drop_duplicates(subset=None, keep = 'first', inplace = True)
+  
   df.rename(columns={'offer id':'offer_id', 'person':'customer_id'}, inplace=True)
   
   return df
+
+# identify duplicate records in a dataframe
+def any_duplicates(df, return_df=False):
+  ''' count and return duplicate records if there are '''
+  
+  df_t = df.copy()
+  duplicate = df_t[df_t.duplicated(keep = 'last')]
+  
+  print('Number of duplicate record: {}'.format(str(duplicate.shape[0])))
+  
+  if return_df:
+    return duplicate
