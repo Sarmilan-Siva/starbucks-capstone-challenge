@@ -24,19 +24,25 @@ offer_names = {
 
 ## functions in helping to create individual level information
 # aggregated transaction and rewards
-def get_TransactionRewards(df):
+def get_TransactionRewards(df, df_pf):
   ''' get transaction and reward information for all customers '''
   
-  df_indv = df.groupby(['customer_id', 'gender']).agg(
+  df_indv = df.groupby(['customer_id']).agg(
     tot_amount = ('amount', 'sum'),
     n_trans = ('amount', 'count'),
     tot_rewards = ('reward_x', 'sum'),
-    n_rewards = ('reward_x', 'count'),
-    age = ('age', 'mean'),
-    income = ('income', 'mean'),
-    member_for = ('member_for', 'mean')).reset_index()
+    n_rewards = ('reward_x', 'count')).reset_index()
   
-  return df_indv
+  # calculate value per transaction and offer
+  df_indv['val_trans'] = round(df_indv['tot_amount']/df_indv['n_trans'], 2)
+  df_indv['val_rewards'] = round(df_indv['tot_rewards']/df_indv['n_rewards'], 2)
+  
+  # merge customer information
+  df_indall = pd.merge(df_indv,
+                      df_pf[['customer_id', 'gender','age', 'income', 'member_for', 'pf_age_valid']],
+                      on='customer_id', how="left")
+  
+  return df_indall
 
 # transaction while claiming the offer
 def get_OfferTransaction(df, offer_split):
