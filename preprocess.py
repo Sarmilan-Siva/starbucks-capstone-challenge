@@ -25,7 +25,10 @@ def process_profile(df):
   df_pf['became_member_on'] = df_pf['became_member_on'].apply(lambda x: pd.to_datetime(x, format='%Y%m%d'))
   df_pf['member_for'] = round((pd.to_datetime('today') - df_pf['became_member_on'])/np.timedelta64(365, 'D'), 2)
   
+  # flag the age 118 rows
   df_pf['pf_age_valid'] = (df_pf['age'] != 118)
+  # replace age 118 with nan, and 
+  df_pf['age'] = df_pf['age'].replace({118:np.nan})
   df_pf.rename(columns={'id':'customer_id'}, inplace=True)
 
   return df_pf
