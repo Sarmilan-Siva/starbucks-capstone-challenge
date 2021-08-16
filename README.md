@@ -19,7 +19,7 @@ Currently the offers are sent to random customers. Therefore this study tries to
 - preprocess.py -  contains all preprocessing functions
 - utilities.py - contains functions necessary for this analysis and model building
 - Proposal.pdf - Proposal submitted for the capstone
-- Project_Report - final project report
+- Project_Report.pdf - final project report
 
 
 ## Environment
