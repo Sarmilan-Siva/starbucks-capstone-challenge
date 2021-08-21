@@ -212,3 +212,23 @@ def df_wide(df, index, columns, values, new_names: dict):
   df_w.rename(columns=new_names, inplace=True)
   
   return df_w
+
+# model prediction
+def get_recommendations(customer_id, model, n_rec=3):
+  ''' function to recommend best offers to a customer '''
+  
+  est_score = []
+  
+  #offers
+  l_offer = ['d1', 'd2', 'd3', 'd4', 'b1', 'b2', 'b3', 'b4']
+  offers = ['{}_compl_ratio'.format(l) for l in l_offer]
+  
+  # get a prediction for specific userID and offerID.
+  for offer in offers:
+    pred = model.predict(customer_id, offer, verbose=False)
+    est_score.append(pred[3])
+    
+  df = pd.DataFrame({'offers':l_offer, 'score':est_score})
+  dft = df.sort_values(by=['score'], ascending=False).head(n_rec)
+  
+  return dft

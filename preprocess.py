@@ -36,6 +36,7 @@ def process_profile(df):
 # preprocess transcript data
 def process_transcript(df):
   ''' preprocess Transcript data and extract useful information'''
+  
   df = pd.concat([df, df['value'].apply(pd.Series)], axis=1)
   df['offer id'] = df['offer id'].fillna(df['offer_id'])
   df.drop(columns=['value', 'offer_id'], inplace=True)
